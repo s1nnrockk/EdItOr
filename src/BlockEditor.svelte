@@ -118,7 +118,7 @@
 
   onMount(() => {
     registerAppBlocks();
-    const theme = Blockly.Theme.defineTheme("editorTheme", {
+    const theme = Blockly.Theme.defineTheme("editorTheme", {\n      name: "editorTheme",
       base: Blockly.Themes.Classic,
       componentStyles: {
         workspaceBackgroundColour: "#f8faf8",
