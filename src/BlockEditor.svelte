@@ -80,15 +80,15 @@
     };
     javascriptGenerator.forBlock["editor_ui_text"] = (block) => {
       const value = block.getFieldValue("VALUE");
-      return `editor.addText(${JSON.stringify(value)});\\n`;
+      return `editor.addText(${JSON.stringify(value)});\n`;
     };
     javascriptGenerator.forBlock["editor_ui_button"] = (block) => {
       const label = block.getFieldValue("LABEL");
-      return `editor.addButton(${JSON.stringify(label)});\\n`;
+      return `editor.addButton(${JSON.stringify(label)});\n`;
     };
     javascriptGenerator.forBlock["editor_ui_input"] = (block) => {
       const placeholder = block.getFieldValue("PLACEHOLDER");
-      return `editor.addInput(${JSON.stringify(placeholder)});\\n`;
+      return `editor.addInput(${JSON.stringify(placeholder)});\n`;
     };
   }
 
