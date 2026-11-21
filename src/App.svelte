@@ -1,16 +1,17 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
   import {
-    ArrowRight, Monitor, Smartphone, Tablet, Globe2, Blocks, Command,
+    ArrowRight, Monitor, Smartphone, Tablet, Globe2, Blocks, Command, Package,
     FolderOpen, Settings2, Sparkles, Check, Layers3, ChevronLeft,
     Code2, Palette, Search, Play, Save, Zap, PanelLeftClose
   } from "lucide-svelte";
   import BlockEditor from "./BlockEditor.svelte";
   import CodeEditor from "./CodeEditor.svelte";
   import Repository from "./Repository.svelte";
+  import LivePreview from "./LivePreview.svelte";
 
   type Platform = "desktop" | "phone" | "tablet" | "web";
-  type Page = "setup" | "editor" | "themes" | "repo";
+  type Page = "setup" | "editor" | "themes" | "repo" | "build";
   type ThemeId = string;
 
   let selected = $state<Platform>("desktop");
@@ -20,6 +21,7 @@
   let search = $state("");
   let previewOpen = $state(false);
   let editorMode = $state<"blocks" | "code">("blocks");
+  let generatedCode = $state("// Добавь блоки, чтобы увидеть результат.");
   let sourceCode = $state("const app = document.querySelector(\"#app\");\n\napp.innerHTML = \"<h1>Hello from EdItOr</h1>\";");
 
   const platforms = [
@@ -83,6 +85,7 @@
       <button class:active={page === "editor"} class="side-link" onclick={() => page === "setup" ? beginProject() : navTo("editor")}><span class="side-icon"><Blocks size={17}/></span> Блочный редактор</button>
       <button class:active={page === "themes"} class="side-link" onclick={() => navTo("themes")}><span class="side-icon"><Layers3 size={17}/></span> Библиотека</button>
       <button class:active={page === "repo"} class="side-link" onclick={() => navTo("repo")}><span class="side-icon"><FolderOpen size={17}/></span> Репозиторий</button>
+      <button class:active={page === "build"} class="side-link" onclick={() => navTo("build")}><span class="side-icon"><Package size={17}/></span> Сборка</button>
       <button class="side-link" disabled><span class="side-icon"><FolderOpen size={17}/></span> Мои проекты <span class="soon">Скоро</span></button>
     </div>
 
@@ -94,7 +97,7 @@
 
   <main class="main-area">
     <header class="topbar">
-      <div class="breadcrumb"><span>Рабочее пространство</span><span class="crumb-separator">/</span><strong>{page === "setup" ? "Новый проект" : page === "editor" ? "Редактор" : page === "repo" ? "Репозиторий проекта" : "Библиотека тем"}</strong></div>
+      <div class="breadcrumb"><span>Рабочее пространство</span><span class="crumb-separator">/</span><strong>{page === "setup" ? "Новый проект" : page === "editor" ? "Редактор" : page === "repo" ? "Репозиторий проекта" : page === "build" ? "Сборка" : "Библиотека тем"}</strong></div>
       <div class="topbar-right"><span class="local-status"><span class="status-dot"></span> Локальный проект</span><div class="avatar">E</div></div>
     </header>
 
@@ -154,13 +157,23 @@
           <div class="editor-tip"><Zap size={16}/><span>Изменения кода<br/><strong>обновляются автоматически</strong></span></div>
         </div>
         {#if editorMode === "blocks"}
-          <BlockEditor />
+          <BlockEditor onCodeChange={(value: string) => generatedCode = value} />
         {:else}
           <div class="source-workspace"><div class="source-head"><div><Code2 size={15}/><strong>main.js</strong><span>JavaScript · редактирование</span></div><button class="source-copy" onclick={() => navigator.clipboard.writeText(sourceCode)}>Копировать код</button></div><div class="source-body"><CodeEditor value={sourceCode} language="javascript" onChange={(value: string) => sourceCode = value}/></div></div>
         {/if}
         {#if previewOpen}
-          <div class="preview-toast" transition:fly={{ y: 12, duration: 180 }}><div><Play size={15}/><strong>Предпросмотр</strong></div><p>Сейчас доступен просмотр сгенерированного JavaScript в панели справа. Полноценный запуск UI-компонентов добавим следующим этапом.</p><button onclick={() => previewOpen = false}>Понятно</button></div>
+          <div class="live-preview-wrap" transition:fly={{ y: 10, duration: 180 }}><LivePreview code={editorMode === "blocks" ? generatedCode : sourceCode} projectName={projectName.trim() || "Моё приложение"} platform={selected} /></div>
         {/if}
+      </div>
+    {:else if page === "build"}
+      <div class="build-page" in:fly={{ y: 8, duration: 220 }}>
+        <div class="build-intro"><span class="eyebrow"><span class="eyebrow-line"></span> BUILD & DISTRIBUTION</span><h1>Сборка приложения<span>.</span></h1><p>Подготовка установочных файлов EdItOr для поддерживаемых платформ.</p></div>
+        <div class="build-grid">
+          <article class="build-card"><div class="build-card-top"><span class="build-platform-icon android-icon"><Smartphone size={22}/></span><span class="build-state">CI build</span></div><h2>Android APK</h2><p>Установочный пакет для Android. Сборка выполняется в GitHub Actions с Android SDK и Rust.</p><div class="build-meta"><span>ARM64</span><span>APK</span><span>Release</span></div><a class="build-action" href="https://github.com/s1nnrockk/EdItOr/actions/workflows/package.yml" target="_blank" rel="noreferrer">Открыть сборки APK <ArrowRight size={15}/></a></article>
+          <article class="build-card"><div class="build-card-top"><span class="build-platform-icon windows-icon"><Monitor size={22}/></span><span class="build-state">CI build</span></div><h2>Windows EXE</h2><p>Установщик EdItOr для Windows x64. Формат NSIS EXE, готовый для установки на ПК.</p><div class="build-meta"><span>Windows x64</span><span>NSIS</span><span>EXE</span></div><a class="build-action" href="https://github.com/s1nnrockk/EdItOr/actions/workflows/package.yml" target="_blank" rel="noreferrer">Открыть сборки EXE <ArrowRight size={15}/></a></article>
+        </div>
+        <section class="build-run-panel"><div><strong>Как получить файл</strong><p>Открой последнюю успешную сборку → Artifacts → скачай EdItOr-Windows или EdItOr-Android. Дождись статуса Success.</p></div><a class="build-history-link" href="https://github.com/s1nnrockk/EdItOr/actions" target="_blank" rel="noreferrer">История сборок <ArrowRight size={14}/></a></section>
+        <p class="build-note">Эта CI-сборка упаковывает само приложение EdItOr. Экспорт пользовательских проектов из редактора в APK/EXE требует отдельного проектного runtime и build-backend — это следующий этап.</p>
       </div>
     {:else if page === "repo"}
       <div class="repo-page" in:fly={{ y: 8, duration: 220 }}><div class="repo-page-intro"><span class="eyebrow"><span class="eyebrow-line"></span> PROJECT SOURCE CONTROL</span><h1>Твой проект. <span>Твоя история.</span></h1><p>Файлы, исходный код и локальные коммиты в одном месте.</p></div><Repository /></div>
