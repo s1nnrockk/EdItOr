@@ -63,7 +63,13 @@
     commits = [{ id: crypto.randomUUID().slice(0, 7), message, time: new Date().toLocaleString("ru-RU"), files: files.length, snapshot: files.map((file) => ({ ...file })) }, ...commits].slice(0, 40);
     commitMessage = ""; dirty = false; showCommit = false; persist();
   }
-  function restoreCommit(commit: Commit) {\n    if (!commit.snapshot?.length) return;\n    files = commit.snapshot.map((file) => ({ ...file }));\n    selectedPath = files[0]?.path ?? "";\n    dirty = true; persist();\n  }\n\n  function exportRepository() {
+  function restoreCommit(commit: Commit) {
+    if (!commit.snapshot?.length) return;
+    files = commit.snapshot.map((file) => ({ ...file }));
+    selectedPath = files[0]?.path ?? "";
+    dirty = true;
+    persist();
+  }\n  function exportRepository() {
     const payload = { name: "editor-project", branch, files, commits };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
