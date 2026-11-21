@@ -156,7 +156,7 @@
         {#if editorMode === "blocks"}
           <BlockEditor />
         {:else}
-          <div class="source-workspace"><div class="source-head"><div><Code2 size={15}/><strong>main.js</strong><span>JavaScript · редактирование</span></div><button class="source-copy" onclick={() => navigator.clipboard.writeText(sourceCode)}>Копировать код</button></div><div class="source-body"><CodeEditor value={sourceCode} language="javascript" onChange={(value) => sourceCode = value}/></div></div>
+          <div class="source-workspace"><div class="source-head"><div><Code2 size={15}/><strong>main.js</strong><span>JavaScript · редактирование</span></div><button class="source-copy" onclick={() => navigator.clipboard.writeText(sourceCode)}>Копировать код</button></div><div class="source-body"><CodeEditor value={sourceCode} language="javascript" onChange={(value: string) => sourceCode = value}/></div></div>
         {/if}
         {#if previewOpen}
           <div class="preview-toast" transition:fly={{ y: 12, duration: 180 }}><div><Play size={15}/><strong>Предпросмотр</strong></div><p>Сейчас доступен просмотр сгенерированного JavaScript в панели справа. Полноценный запуск UI-компонентов добавим следующим этапом.</p><button onclick={() => previewOpen = false}>Понятно</button></div>
