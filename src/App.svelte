@@ -93,7 +93,7 @@
             {#each platforms as platform}
               <button class:chosen={selected === platform.id} class="platform-card" onclick={() => selected = platform.id} aria-pressed={selected === platform.id}>
                 <div class="card-top">
-                  <div class="platform-icon"><svelte:component this={platform.icon} size={23} strokeWidth={1.7}/></div>
+                  <div class="platform-icon"><platform.icon size={23} strokeWidth={1.7}/></div>
                   <span class="platform-tag">{platform.tag}</span>
                 </div>
                 <div class="card-copy"><h3>{platform.title}</h3><p>{platform.subtitle}</p></div>
@@ -107,7 +107,7 @@
           <div class="name-field"><input bind:value={projectName} maxlength="40" placeholder="Например, MyFirstApp" aria-label="Название проекта" /><span class="field-hint">.editor</span></div>
         </section>
         <div class="bottom-actions">
-          <div class="selection-summary"><span class="summary-icon"><svelte:component this={selectedPlatform.icon} size={17}/></span><span><strong>{selectedPlatform.title}</strong><small>Выбранная платформа</small></span></div>
+          <div class="selection-summary"><span class="summary-icon"><selectedPlatform.icon size={17}/></span><span><strong>{selectedPlatform.title}</strong><small>Выбранная платформа</small></span></div>
           <button class="primary-button" onclick={beginProject}>Открыть редактор <ArrowRight size={17}/></button>
         </div>
         <footer class="page-footer"><span>Создавай без ограничений.</span><span>EdItOr Studio <span class="footer-divider">·</span> Ранний доступ</span></footer>
