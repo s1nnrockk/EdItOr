@@ -69,7 +69,7 @@
     selectedPath = files[0]?.path ?? "";
     dirty = true;
     persist();
-  }\n  function exportRepository() {
+  }  function exportRepository() {
     const payload = { name: "editor-project", branch, files, commits };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
