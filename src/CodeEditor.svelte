@@ -9,9 +9,8 @@
   import { json } from "@codemirror/lang-json";
   import { oneDark } from "@codemirror/theme-one-dark";
 
-  let { value = "", language = "javascript", onChange = (_value: string) => {}, readOnly = false } = $props<{
-    value?: string; language?: string; onChange?: (value: string) => void; readOnly?: boolean;
-  }>();
+  type Props = { value?: string; language?: string; onChange?: (value: string) => void; readOnly?: boolean };
+  let { value = "", language = "javascript", onChange = (_value: string) => {}, readOnly = false }: Props = $props();
   let host: HTMLDivElement;
   let view: EditorView | undefined;
   const languages: Record<string, () => any> = {
