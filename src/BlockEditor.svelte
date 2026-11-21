@@ -11,6 +11,7 @@
   let copied = $state(false);
   let showCode = $state(true);
   let blockCount = $state(0);
+  let { onCodeChange = (_value: string) => {} }: { onCodeChange?: (value: string) => void } = $props();
 
   const toolbox = {
     kind: "categoryToolbox",
@@ -96,6 +97,7 @@
     if (!workspace) return;
     generated = javascriptGenerator.workspaceToCode(workspace) || "// Добавь блоки, чтобы увидеть код здесь.";
     blockCount = workspace.getAllBlocks(false).length;
+    onCodeChange(generated);
     try {
       localStorage.setItem("editor-block-workspace", JSON.stringify(Blockly.serialization.workspaces.save(workspace)));
     } catch { /* Local storage may be unavailable in private mode. */ }
